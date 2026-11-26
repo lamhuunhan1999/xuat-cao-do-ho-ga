@@ -2,3 +2,5 @@
 
 #warning-text p{margin:9px 0}.drop:focus-within{outline:3px solid #8cbeb8}a{color:#087f79}
 .card{min-width:0}.tablewrap{max-width:100%}@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.links{gap:12px;flex-wrap:wrap}.local{gap:4px}.quiet{margin-left:6px}}
+
+.resolution{padding:14px;background:#fff7e8;border:1px solid #dbbe82;border-radius:8px;margin:14px 0}.resolution label{display:block;margin:12px 0}.resolution select{display:block;max-width:100%;width:100%;padding:8px;font:inherit;margin-top:5px}

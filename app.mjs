@@ -1,25 +1,25 @@
 import {makeZip} from './zip.mjs';
 const $=id=>document.getElementById(id);
-let file=null,worker=null,busy=false,report=null,tab='station',runId=0,urls=[];
+let file=null,worker=null,busy=false,report=null,tab='station',runId=0,urls=[],choices={};
 const number=(v,d=0)=>v===null?'—':Number(v).toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d});
 const status=s=>$('status').textContent=s;
 function setBusy(v){busy=v;$('file').disabled=v;$('start').disabled=v||!file;$('stop').hidden=!v;$('progress').hidden=!v;}
-function reset(){for(const u of urls)URL.revokeObjectURL(u);urls=[];report=null;$('empty').hidden=false;$('report').hidden=true;$('downloads').hidden=true;$('npoints').textContent=$('nstations').textContent=$('duration').textContent='—';}
-function choose(f){if(busy||!f)return;reset();if(!/\.dwg$/i.test(f.name)||f.size>100*1024*1024||f.size<6){file=null;status('Chọn tệp DWG hợp lệ, không quá 100 MB.');setBusy(false);return;}file=f;$('filename').textContent=f.name;$('filehint').textContent=number(f.size/1024/1024,1)+' MB · bản vẽ không gửi lên máy chủ';status('Sẵn sàng đọc bản vẽ.');setBusy(false);}
+function reset(){for(const u of urls)URL.revokeObjectURL(u);urls=[];report=null;$('empty').hidden=false;$('report').hidden=true;$('downloads').hidden=true;$('resolution').replaceChildren();$('resolution').hidden=true;$('npoints').textContent=$('nstations').textContent=$('duration').textContent='—';}
+function choose(f){if(busy||!f)return;choices={};reset();if(!/\.dwg$/i.test(f.name)||f.size>100*1024*1024||f.size<6){file=null;status('Chọn tệp DWG hợp lệ, không quá 100 MB.');setBusy(false);return;}file=f;$('filename').textContent=f.name;$('filehint').textContent=number(f.size/1024/1024,1)+' MB · bản vẽ không gửi lên máy chủ';status('Sẵn sàng đọc bản vẽ.');setBusy(false);}
 $('file').addEventListener('change',e=>choose(e.target.files[0]));
 for(const ev of ['dragover','dragleave','drop'])$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.toggle('drag',ev==='dragover');if(ev==='drop')choose(e.dataTransfer.files[0]);});
 function stop(){runId++;worker?.terminate();worker=null;setBusy(false);status('Đã dừng. Bản vẽ gốc không bị thay đổi.');}
 $('start').onclick=async()=>{
- if(!file||busy)return;reset();setBusy(true);const current=++runId;
+ if(!file||busy)return;for(const select of document.querySelectorAll('#resolution select')){if(select.value)choices[select.dataset.key]=select.value;else delete choices[select.dataset.key];}reset();setBusy(true);const current=++runId;
  try{status('Đang đọc tệp trên thiết bị…');const bytes=await file.arrayBuffer();if(current!==runId)return;
-  worker=new Worker(new URL('./worker.mjs',import.meta.url),{type:'module'});
+  worker=new Worker(new URL('./worker.mjs?v=2.1',import.meta.url),{type:'module'});
   worker.onerror=e=>{if(current!==runId)return;worker?.terminate();worker=null;setBusy(false);status('Không khởi chạy được bộ đọc. Dùng Chrome/Edge mới và kiểm tra kết nối Internet.');};
   worker.onmessage=({data})=>{if(current!==runId)return;if(data.type==='progress'){status(data.stage);return;}worker?.terminate();worker=null;setBusy(false);
    if(data.type==='error'){status(data.error);return;}
    report=data.report;showReport(data.files);if(report.problems.length){status('Cần kiểm tra dữ liệu — chưa xuất CSV.');return;}
    status('Hoàn tất. Hãy kiểm tra dữ liệu trước khi sử dụng.');$('downloads').hidden=false;
    link('zip',makeZip(data.files),'KetQua_CSV.zip');link('pointcsv',data.files['CaoDo.csv'],'CaoDo.csv');link('stationcsv',data.files['Coc.csv'],'Coc.csv');link('check','\ufeff'+data.files['KiemTra.txt'],'KiemTra.txt');
-  };worker.postMessage({bytes,name:file.name},[bytes]);
+  };worker.postMessage({bytes,name:file.name,choices},[bytes]);
  }catch(e){worker?.terminate();worker=null;setBusy(false);status(e.message);}
 };
 $('stop').onclick=stop;
@@ -32,6 +32,12 @@ function showReport(files){
  for(const e of errors.slice(0,30)){const p=document.createElement('p');p.textContent=(e.id?e.id+': ':'')+e.reason;$('problems').appendChild(p);}
  if(errors.length){const a=document.createElement('a');a.textContent='Tải báo cáo đầy đủ ('+errors.length+' lỗi)';a.href=makeURL(files['KiemTra.json']);a.download='KiemTra.json';$('problems').appendChild(a);}
  $('warnings').hidden=false;$('warning-text').replaceChildren();for(const s of report.warnings){const p=document.createElement('p');p.textContent=s;$('warning-text').appendChild(p);}if(report.decoder_flags)$('warnings').open=true;
+ const conflicts=report.station_conflicts||[];$('resolution').hidden=!conflicts.length;$('resolution').replaceChildren();
+ if(conflicts.length){
+  const intro=document.createElement('p');intro.textContent='Các cọc dưới đây gần trùng tâm nhưng khác vị trí/hướng. Chọn tên cọc theo hồ sơ, rồi bấm Đọc DWG và tạo CSV lần nữa. Công cụ giữ nguyên tọa độ và hướng của cọc bạn chọn.';$('resolution').appendChild(intro);
+  for(const c of conflicts){const label=document.createElement('label');label.textContent='Lý trình '+number(c.chainage,3)+' m: ';const select=document.createElement('select');select.dataset.key=c.key;select.setAttribute('aria-label','Cọc tại '+c.chainage+' m');const empty=document.createElement('option');empty.value='';empty.textContent='— Chọn cọc —';select.appendChild(empty);
+   for(const p of c.candidates){const option=document.createElement('option');option.value=p[4];option.textContent=p[1]+' · mã '+p[4];select.appendChild(option);}select.value=c.selected_id||'';label.appendChild(select);$('resolution').appendChild(label);}
+ }
  drawTable();
 }
 function drawTable(){

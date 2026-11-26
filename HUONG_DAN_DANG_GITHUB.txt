@@ -1,24 +1,13 @@
-﻿ĐĂNG CÔNG CỤ DWG → CSV LÊN GITHUB PAGES
+CẬP NHẬT WEB 2.1
+1. Giải nén gói web này trên máy tính.
+2. Mở https://github.com/lamhuunhan1999/xuat-cao-do-ho-ga
+3. Add file → Upload files. Kéo các tệp và thư mục đã giải nén vào thư mục gốc repository, rồi Commit changes.
+   Không tải nguyên tệp ZIP lên làm trang web. Không đưa DWG hoặc CSV khảo sát vào repository công khai.
+4. Tệp cần cập nhật: index.html, app.mjs, engine.mjs, worker.mjs, style.css; nên cập nhật cả README.md và hướng dẫn này.
+   Giữ vendor, zip.mjs và các tệp giấy phép. Gói này có đầy đủ các tệp đó.
+5. Chờ GitHub Pages triển khai xong, mở https://lamhuunhan1999.github.io/xuat-cao-do-ho-ga/ và nhấn Ctrl+F5.
+   Kiểm tra dòng PHIÊN BẢN 2.1 WEB.
+6. Chọn Drawing1.dwg và đọc. Nếu có 4 cặp cọc gần trùng nhưng khác hướng, chọn tên cọc trong từng ô theo hồ sơ rồi bấm Đọc DWG và tạo CSV lần nữa.
+7. Tải bộ CSV. Trong HGCAODO chọn nguồn cao độ CSV và nguồn cọc CSV tương ứng.
 
-Bản web đã được tạo và kiểm thử. Kết nối GitHub trả lỗi 403 (Resource not accessible by integration) khi ghi nên chưa cập nhật được repository.
-
-1. Giải nén HG_DWG_CSV_v2_GitHubPages.zip.
-2. Mở repository https://github.com/lamhuunhan1999/xuat-cao-do-ho-ga trong trình duyệt bạn đã đăng nhập.
-3. Chọn Add file → Upload files.
-4. Kéo tất cả FILE VÀ THƯ MỤC bên trong phần vừa giải nén vào GitHub. Giữ thư mục vendor nguyên vẹn.
-   index.html phải nằm ngay thư mục gốc repository, không nằm trong một thư mục bao ngoài.
-   Không tải nguyên ZIP lên để làm website.
-5. Chọn Commit changes (nhánh main). README.md sẽ được cập nhật; trang gốc nằm trong archive.
-   File index.html. cũ có dấu chấm cuối có thể để lại, vì index.html mới là trang chủ đúng tên.
-6. Settings → Pages → Source: Deploy from a branch → main → /(root) → Save.
-   Nếu đã có cấu hình này thì giữ nguyên, chờ lượt xuất bản hoàn tất.
-7. Mở https://lamhuunhan1999.github.io/xuat-cao-do-ho-ga/ và tải lại trang.
-
-DÙNG CÔNG CỤ
-Chọn DWG → Đọc DWG và tạo CSV → kiểm tra kết quả → Tải bộ CSV.
-Trong ZWCAD: HGCAODO → CSV cao độ: CaoDo.csv → CSV cọc: Coc.csv.
-Không cần chạy CMD, không cần cài Python. Lần đầu cần Internet để tải bộ đọc khoảng 7,5 MB.
-Bản vẽ không được gửi lên máy chủ. Công cụ không đọc NTD và chưa đọc cọc/điểm trong block hoặc Xref.
-
-Nếu tải trang mà vẫn thấy giao diện cũ, kiểm tra Actions/Pages đã xuất bản commit mới thành công rồi tải lại.
-Nếu báo thiếu worker.mjs, engine.mjs hoặc vendor/libredwg-web.js, kiểm tra đã tải đầy đủ file và thư mục ở bước 4.
+Gói này là bản cập nhật để tải lên; việc tải gói về không tự thay đổi website đang chạy.
