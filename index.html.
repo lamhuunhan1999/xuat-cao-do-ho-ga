@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Công cụ thiết kế</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 { color: #16365c; }
+        .card {
+            background: white;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CÔNG CỤ THIẾT KẾ</h1>
+        <p>Hỗ trợ thiết kế công trình giao thông - hạ tầng</p>
+
+        <div class="card">
+            <h2>Chuyển đổi CAD sang CSV</h2>
+            <p>Trích xuất dữ liệu cọc và cao độ.</p>
+            <button onclick="alert('Đang phát triển')">
+                Mở công cụ
+            </button>
+        </div>
+
+        <div class="card">
+            <h2>Thiết kế thoát nước</h2>
+            <p>Tính toán hố ga và hệ thống cống.</p>
+            <button onclick="alert('Đang phát triển')">
+                Mở công cụ
+            </button>
+        </div>
+    </div>
+</body>
+</html>
